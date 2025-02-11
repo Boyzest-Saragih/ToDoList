@@ -18,10 +18,10 @@ const Footer = () => {
           <div>
             <h3 className="text-white font-semibold text-lg mb-4">Quick Links</h3>
             <ul className="space-y-2 text-sm">
-              <li><a href="#" className="hover:text-white transition-colors">Home</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Services</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">About</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
+              <li><p className="hover:text-white transition-colors">Home</p></li>
+              <li><p className="hover:text-white transition-colors">Services</p></li>
+              <li><p className="hover:text-white transition-colors">About</p></li>
+              <li><p className="hover:text-white transition-colors">Contact</p></li>
             </ul>
           </div>
 
@@ -38,8 +38,8 @@ const Footer = () => {
         <div className="pt-8 border-t border-gray-800 text-sm text-center">
           <p>© {currentYear} Alamak || All rights reserved.</p>
           <div className="mt-2 space-x-4">
-            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+            <p className="hover:text-white transition-colors">Privacy Policy</p>
+            <p className="hover:text-white transition-colors">Terms of Servicep</p>
           </div>
         </div>
       </div>

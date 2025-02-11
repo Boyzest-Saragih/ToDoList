@@ -1,4 +1,4 @@
-const apiURL = 'http://localhost:2005'
+const apiURL = 'http://localhost:2005/todos'
 
 export const fetchTodos = async () => {
     const response = await fetch(apiURL);

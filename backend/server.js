@@ -1,58 +1,40 @@
-const express = require("express")
-const cors = require('cors')
-const mongoose = require('mongoose')
+const express = require('express');
+const cors = require('cors');
+const mongoose = require('mongoose');
+const MongoStore = require('connect-mongo')
+const todosRoutes = require('./routes/TodosRoutes');
+const usersRoutes = require('./routes/UsersRoutes');
+const dotenv = require('dotenv')
+const session = require('express-session')
 
-const app = express()
-app.use(cors())
-app.use(express.json())
+dotenv.config()
+const app = express();
+app.use(express.json());
+app.use(express.urlencoded({extended:true}))
 
-mongoose.connect("mongodb://127.0.0.1:27017/todosDB",{
-    useNewUrlParser:true,
-    useUnifiedTopology : true
-})
 
-const taskSchema = new mongoose.Schema({
-    title:String,
-    completed:Boolean
-})
+mongoose.connect(process.env.MONGO_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
-const Task = mongoose.model("Task",taskSchema)
+app.use(cors({
+  origin:'http://localhost:3000',
+  credentials:true
+}));
 
-//READ
-app.get("/", async (req,res)=>{
-    const task = await Task.find()
-    res.status(200).json(task)
-})
+app.use(session({
+  secret : process.env.SESSION_SECRET,    
+  resave:false,
+  saveUninitialized:false,
+  store: MongoStore.create({mongoUrl:process.env.MONGO_URL}),
+  cookie:{secure:false,httpOnly:true,maxAge:1000*60*60*24}
 
-// CREATE
-app.post("/", async (req,res)=>{
-    const {title} = req.body
-    const newTask = new Task({title, completed:false})
-    await newTask.save()
-    res.status(200).json(newTask)
-})
+}))
 
-// UPDATE
-app.put("/:id", async (req,res)=>{
-    const {id} = req.params
-    const {title} = req.body
-    const updateTask = await Task.findByIdAndUpdate(id, {title}, {new:true})
-    res.json(updateTask)
-})
+app.use('/todos', todosRoutes);
+app.use('/users', usersRoutes);
 
-app.put("/:id/toggle", async (req,res)=>{
-    const {id} = req.params
-    const task = await Task.findById(id)
-    const updateTask = await Task.findByIdAndUpdate(id, {completed: !task.completed}, {new:true})
-    res.json(updateTask)
-})
 
-// DELETE
-app.delete("/:id/delete", async (req,res)=>{
-    const {id} = req.params
-    await Task.findByIdAndDelete(id)
-    res.json({message:"Task DELETED"})
-})
-
-const PORT = 2005
-app.listen(PORT,()=>console.log("Server running on http://localhost:"+PORT))
+const PORT = process.env.PORT
+app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));

@@ -5,7 +5,7 @@ import {
   toggleTodo,
   deleteTodo,
   editTodo,
-} from "../actions/todoActions";
+} from "../../actions/todoActions";
 
 const TodoList = () => {
   const dispatch = useDispatch();
@@ -24,17 +24,19 @@ const TodoList = () => {
     return true;
   });
 
-  if (loading) return (
-    <div className="flex justify-center items-center mt-8">
-      <div className="text-cyan-500 text-lg">Loading...</div>
-    </div>
-  );
-  
-  if (error) return (
-    <div className="flex justify-center items-center mt-8">
-      <div className="text-red-500 text-lg">Error: {error}</div>
-    </div>
-  );
+  if (loading)
+    return (
+      <div className="flex justify-center items-center mt-8">
+        <div className="text-cyan-500 text-lg">Loading...</div>
+      </div>
+    );
+
+  if (error)
+    return (
+      <div className="flex justify-center items-center mt-8">
+        <div className="text-red-500 text-lg">Error: {error}</div>
+      </div>
+    );
 
   function handleEditOpen(todo) {
     setIsEdit(todo._id);
@@ -43,7 +45,7 @@ const TodoList = () => {
 
   function handleEditSave(id) {
     if (editTitle.length >= 50) {
-      return alert("Panjang karakter melebihi 50")
+      return alert("Panjang karakter melebihi 50");
     }
     dispatch(editTodo(id, editTitle));
     setIsEdit(null);
@@ -58,15 +60,16 @@ const TodoList = () => {
     <div className="max-w-2xl w-full mx-auto mt-4">
       <ul className="flex flex-col gap-3">
         {filterTodos.map((todo) => (
-          <li 
-            className="flex bg-gray-800/50 backdrop-blur-sm p-4 rounded-xl shadow-lg transition-all hover:shadow-cyan-500/10"
+          <li
+            className="flex bg-gray-800/50 backdrop-blur-sm p-4 rounded-xl shadow-lg 
+            transition-all hover:shadow-cyan-500/10 max-sm:mx-6"
             key={todo._id}
           >
             {isEdit === todo?._id ? (
               <div className="flex w-full gap-4 items-center">
                 <input
                   className="flex-1 p-2 text-black bg-gray-100 rounded-lg border-2 border-transparent 
-                           focus:border-cyan-600 focus:outline-none transition-colors"
+                           focus:border-cyan-600 focus:outline-none transition-colors max-sm:w-2 text-sm px-1 py-1"
                   type="text"
                   value={editTitle}
                   onChange={(e) => setEditTitle(e.target.value)}
@@ -75,14 +78,14 @@ const TodoList = () => {
                 <div className="flex gap-2">
                   <button
                     className="bg-cyan-600 hover:bg-cyan-700 px-4 py-2 rounded-lg text-sm font-medium
-                             transition-colors duration-200"
+                             transition-colors duration-200 max-sm:p-0 max-sm:bg-transparent max-sm:text-[14px] max-sm:underline max-sm:underline-offset-4 max-sm:text-blue-600"
                     onClick={() => handleEditSave(todo._id)}
                   >
                     Confirm
                   </button>
                   <button
                     className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg text-sm font-medium
-                             transition-colors duration-200"
+                             transition-colors duration-200 max-sm:p-0 max-sm:bg-transparent max-sm:text-[14px] max-sm:underline max-sm:underline-offset-4 max-sm:text-red-600"
                     onClick={() => handleEditCancel()}
                   >
                     Cancel
@@ -97,14 +100,16 @@ const TodoList = () => {
                              checked:border-cyan-500 checked:bg-cyan-500 transition-colors"
                     type="checkbox"
                     checked={todo.completed}
-                    onChange={() => dispatch(toggleTodo(todo._id, todo.completed))}
+                    onChange={() =>
+                      dispatch(toggleTodo(todo._id, todo.completed))
+                    }
                   />
-                  <svg 
+                  <svg
                     className="absolute w-5 h-5 pointer-events-none hidden peer-checked:block text-white"
-                    xmlns="http://www.w3.org/2000/svg" 
+                    xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
-                    fill="none" 
-                    stroke="currentColor" 
+                    fill="none"
+                    stroke="currentColor"
                     strokeWidth="2"
                   >
                     <polyline points="20 6 9 17 4 12"></polyline>
@@ -121,14 +126,14 @@ const TodoList = () => {
                 <div className="flex gap-2">
                   <button
                     className="bg-cyan-600 hover:bg-cyan-700 px-4 py-2 rounded-lg text-sm font-medium
-                             transition-colors duration-200"
+                             transition-colors duration-200 max-sm:p-0 max-sm:bg-transparent max-sm:text-[14px] max-sm:underline max-sm:underline-offset-4 max-sm:text-blue-500"
                     onClick={() => handleEditOpen(todo)}
                   >
                     Edit
                   </button>
                   <button
                     className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg text-sm font-medium
-                             transition-colors duration-200"
+                             transition-colors duration-200 max-sm:p-0 max-sm:bg-transparent max-sm:text-[14px] max-sm:underline max-sm:underline-offset-4 max-sm:text-red-500"
                     onClick={() => dispatch(deleteTodo(todo._id))}
                   >
                     Delete
