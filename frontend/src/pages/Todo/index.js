@@ -14,7 +14,7 @@ const Todo = () => {
       <TodoForm />
       <TodoFilter />
       <TodoList />
-      <Counter />
+      {/* <Counter /> */}
       <Footer />
     </DefaultLayout>
   );

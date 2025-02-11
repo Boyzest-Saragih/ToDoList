@@ -13,8 +13,9 @@ const getTasks = async (req, res) => {
 // CREATE
 const createTask = async (req, res) => {
   try {
+    const {id} = req.params
     const { title } = req.body;
-    const newTask = new Task({ title, completed: false });
+    const newTask = new Task({ title,completed: false,userId:id });
     await newTask.save();
     res.status(200).json(newTask);
   } catch (error) {

@@ -16,9 +16,9 @@ export const fetchTodos = () => async (dispatch) => {
   }
 };
 
-export const addTodo = (title) => async (dispatch) => {
+export const addTodo = (title,userId) => async (dispatch) => {
   try {
-    const todo = await addTodosApi(title);
+    const todo = await addTodosApi(title,userId);
     dispatch({ type: "ADD_TODO_SUCCESS", payload: todo });
   } catch (error) {
     console.log(error);

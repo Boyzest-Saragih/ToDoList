@@ -8,7 +8,7 @@ const rootReducer = combineReducers({
     todos:todosReducers,
     filter: filterReducers,
     users : usersReducer,
-    count : counterReducers
+    counter: counterReducers
 })
 
 export default rootReducer

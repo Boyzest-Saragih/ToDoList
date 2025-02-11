@@ -19,9 +19,9 @@ export const userLogin = (email, password)=>async(dispatch)=>{
     try {
         const user = await userLoginApi(email,password)
         dispatch({type:'USER_LOGIN_SUCCESS', payload:user})
-        dispatch(getCurrentUserApi())
+        dispatch(getCurrentUser())
     } catch (error) {
-        console.log(error)
+        console.log("Gagal Login")
     }
 }
 

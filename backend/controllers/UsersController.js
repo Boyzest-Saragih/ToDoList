@@ -104,7 +104,7 @@ const deleteUser = async (req, res) => {
 
 // CHECK USER LOGIN
 const getCurrentUser = async (req, res) => {
-  console.log("Session on request:", req.session); // 🔍 Debugging session
+  console.log("Session on request:", req.session);
 
   try {
     if (!req.session.userId) {

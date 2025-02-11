@@ -6,7 +6,7 @@ const todosController = require('../controllers/TodosController');
 router.get('/', todosController.getTasks);
 
 // CREATE
-router.post('/', todosController.createTask);
+router.post('/:id', todosController.createTask);
 
 // UPDATE
 router.put('/:id', todosController.updateTask);

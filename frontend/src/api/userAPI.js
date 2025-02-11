@@ -21,33 +21,35 @@ export const userLogin = async (email, password) => {
     const response = await fetch(`${apiURL}/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      credentials:"include",
+      credentials: "include",
       body: JSON.stringify({ email, password }),
     });
 
-    if(!response.ok) throw new Error('login gagal, cek email dan password')
+    if (!response.ok) {
+      return alert("Incorrect email or password");
+    }
     return response.json();
   } catch (error) {
     console.log(error);
   }
 };
 
-export const userLogout = async()=>{
+export const userLogout = async () => {
   try {
-    const response = await fetch (`${apiURL}/logout`,{
-      method:"POST",
-      credentials:'include'
-    })
-    return response.json
+    const response = await fetch(`${apiURL}/logout`, {
+      method: "POST",
+      credentials: "include",
+    });
+    return response.json;
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
-}
+};
 
 export const getCurrentUser = async () => {
-  const response = await fetch(`${apiURL}/auth/me`,{
-    method:'GET',
-    credentials:"include"
+  const response = await fetch(`${apiURL}/auth/me`, {
+    method: "GET",
+    credentials: "include",
   });
   if (!response.ok) throw new Error("inavlid get data user");
   return response.json();
