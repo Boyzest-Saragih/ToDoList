@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DefaultLayout from "../../layouts/DefaultLayout";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { userRegister } from "../../actions/userActions";
+import { useDispatch, useSelector } from "react-redux";
+import { userRegister,userLogin, getCurrentUser } from "../../actions/userActions";
 
 const RegisterPage = () => {
   let Navigate = useNavigate();
@@ -10,11 +10,21 @@ const RegisterPage = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const currentUser = useSelector((state)=>state.users.currentUser)
+  const navigate = useNavigate()
 
-  const handleSubmit = (e) => {
+  useEffect(()=>{
+    if(currentUser?.userId){
+      navigate('/todos')
+    }
+  },[currentUser,navigate])
+
+  const handleSubmit = async(e) => {
     e.preventDefault();
     if (name.trim() || email.trim() || password.trim()) {
-      dispatch(userRegister(name, email, password));
+      await dispatch(userRegister(name, email, password));
+      await dispatch(userLogin(email,password))
+      await dispatch(getCurrentUser())
       setName("");
       setEmail("");
       setPassword("");

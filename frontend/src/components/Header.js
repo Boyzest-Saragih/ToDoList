@@ -26,7 +26,7 @@ const Header = () => {
       <div className="flex items-center gap-3">
         <div className="w-10 h-10 rounded-full bg-gray-700 max-sm:w-8 max-sm:h-8">
           <img
-            src="/api/placeholder/40/40"
+            src={currentUser?.image}
             alt=""
             className="w-full h-full rounded-full object-cover"
           />

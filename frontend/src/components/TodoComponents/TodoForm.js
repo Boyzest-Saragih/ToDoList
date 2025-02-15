@@ -6,7 +6,6 @@ import { getCurrentUser } from "../../actions/userActions";
 const TodoForm = () => {
   const [title, setTitle] = useState("");
   const currentUser = useSelector((state) => state.users.currentUser);
-  console.log("currentUser di TodoForm:", currentUser.userId);
 
   const dispatch = useDispatch();
 

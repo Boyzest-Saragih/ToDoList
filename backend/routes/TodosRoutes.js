@@ -1,20 +1,21 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const todosController = require('../controllers/TodosController');
+const todos = require("../controllers/TodosController");
+const user = require("../controllers/UsersController");
 
 // READ
-router.get('/', todosController.getTasks);
+router.get("/", user.authMiddleware, todos.getTasks);
 
 // CREATE
-router.post('/:id', todosController.createTask);
+router.post("/:id", todos.createTask);
 
 // UPDATE
-router.put('/:id', todosController.updateTask);
+router.put("/:id", todos.updateTask);
 
 // UPDATE TOGGLE COMPLETED
-router.put('/:id/toggle', todosController.toggleTaskCompleted);
+router.put("/:id/toggle", todos.toggleTaskCompleted);
 
 // DELETE
-router.delete('/:id/delete', todosController.deleteTask);
+router.delete("/:id/delete", todos.deleteTask);
 
 module.exports = router;

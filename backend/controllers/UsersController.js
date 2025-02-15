@@ -1,19 +1,36 @@
 const User = require("../models/User");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const saltRounds = 10;
 
-// READ
-const getUsers = async (req, res) => {
+// MIDDLEWARE
+const authMiddleware = (req, res, next) => {
+  const token = req.cookies.token;
+
+  if (!token) {
+    return res.status(401).json({ message: "need token" });
+  }
+
   try {
-    const user = await User.find();
-    res.status(200).json(user);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+    next();
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(400).json({ message: "invalid token" });
   }
 };
 
-const getUser = async (req, res) => {
+const adminMiddleware = (req, res, next) => {
+  if (req.user.role === "admin") {
+    next();
+  }
+  return res.status(403).json({ message: "No Access, Admin Only" });
+};
+
+// GET USERS DATA
+const getUsers = async (req, res) => {
   try {
-    const { id } = req.params;
-    const user = await User.findById(id);
+    const user = await User.find();
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -33,9 +50,42 @@ const registerUser = async (req, res) => {
       return res.status(400).json({ message: "Email already registered" });
     }
 
-    const newUser = new User({ name, email, password, role: "user" });
+    const hashPassword = await bcrypt.hash(password, saltRounds);
+
+    const newUser = new User({
+      name,
+      email,
+      password: hashPassword,
+      role: "user",
+      image:
+        "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png",
+    });
+
     await newUser.save();
-    res.status(200).json({ message: "Register Succesfully", user: newUser });
+
+    const token = jwt.sign(
+      {
+        userId: newUser._id,
+        name: newUser.name,
+        email: newUser.email,
+        image: newUser.image,
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: process.env.JWT_EXPIRES_IN,
+      }
+    );
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "Strict",
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+
+    res
+      .status(200)
+      .json({ message: "Register Succesfully", user: newUser.name });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -45,34 +95,50 @@ const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
-    console.log(user);
 
-    if (!user || password !== user.password) {
-      return res.status(400).json({ message: "Invalid Email or Password" });
+    if (!user) {
+      return res.status(401).json({ message: "Invalid Email" });
     }
 
-    req.session.userId = user._id;
-    req.session.role = user.role;
-    req.session.name = user.name;
-    await req.session.save();
-    console.log(req.session);
-    res.json({ mesage: "Login succesfully", user: { user } });
+    const passwordCheck = await bcrypt.compare(password, user.password);
+    if (!passwordCheck) {
+      return res.status(401).json({ message: "Invalid Password" });
+    }
+
+    const token = jwt.sign(
+      {
+        userId: user._id,
+        name: user.name,
+        email: user.email,
+        image: user.image,
+      },
+      process.env.JWT_SECRET,
+      {
+        expiresIn: process.env.JWT_EXPIRES_IN,
+      }
+    );
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true,
+      sameSite: "Strict",
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+
+    res.json({ mesage: "Login succesfully", token, user: user.name });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: error.message });
   }
 };
 
-const logoutUser = async (req, res) => {
-  try {
-    req.session.destroy((err) => {
-      if (err) return res.status(500).json({ message: "Logout failed" });
-      res.clearCookie("connect.sid"); // Hapus cookie session (penting untuk menghapus session di browser)
-      res.json({ message: "Logged out" });
-    });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+const logoutUser = (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "Strict",
+  });
+  res.status(200).json({ message: "Logout succesfully" });
 };
 
 // EDIT
@@ -104,16 +170,16 @@ const deleteUser = async (req, res) => {
 
 // CHECK USER LOGIN
 const getCurrentUser = async (req, res) => {
-  console.log("Session on request:", req.session);
-
   try {
-    if (!req.session.userId) {
+    if (!req.user) {
       return res.status(401).json({ message: "User not logged" });
     }
+    console.log(req.user);
     res.json({
-      userId: req.session.userId,
-      role: req.session.role,
-      name: req.session.name,
+      userId: req.user.userId,
+      email: req.user.email,
+      name: req.user.name,
+      image: req.user.image,
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -122,11 +188,12 @@ const getCurrentUser = async (req, res) => {
 
 module.exports = {
   getUsers,
-  getUser,
   registerUser,
   loginUser,
+  logoutUser,
   editUser,
   deleteUser,
   getCurrentUser,
-  logoutUser,
+  authMiddleware,
+  adminMiddleware,
 };

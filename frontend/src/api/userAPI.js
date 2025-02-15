@@ -1,7 +1,9 @@
 const apiURL = "http://localhost:2005/users";
 
 export const fetchUsers = async () => {
-  const response = await fetch(apiURL);
+  const response = await fetch(apiURL, {
+    credentials: "include",
+  });
   if (!response.ok) throw new Error("Gagal mengambil data users");
   return response.json();
 };
@@ -11,6 +13,7 @@ export const userRegister = async (name, email, password) => {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ name, email, password }),
+    credentials: "include",
   });
   if (!response.ok) throw new Error("Users already registered");
   return response.json();
@@ -47,10 +50,14 @@ export const userLogout = async () => {
 };
 
 export const getCurrentUser = async () => {
-  const response = await fetch(`${apiURL}/auth/me`, {
-    method: "GET",
-    credentials: "include",
-  });
-  if (!response.ok) throw new Error("inavlid get data user");
-  return response.json();
+  try {
+    const response = await fetch(`${apiURL}/auth/me`, {
+      method: "GET",
+      credentials: "include",
+    });
+    if (!response.ok) throw new Error("inavlid get data user");
+    return response.json();
+  } catch (error) {
+    console.log(error.message);
+  }
 };

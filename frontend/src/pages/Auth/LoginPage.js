@@ -17,13 +17,11 @@ const LoginPage = () => {
     }
   }, [currentUser, navigate]);
 
-  console.log(currentUser)
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (email.trim() && password.trim()) {
       await dispatch(userLogin(email, password));
       await dispatch(getCurrentUser());
-      console.log(currentUser)
     }
   };
 
