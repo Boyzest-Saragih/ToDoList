@@ -1,7 +1,14 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const cloudinary = require("cloudinary").v2;
 const saltRounds = 10;
+
+cloudinary.config({
+  cloud_name: "dk326mske",
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 // MIDDLEWARE
 const authMiddleware = (req, res, next) => {
@@ -142,7 +149,7 @@ const logoutUser = (req, res) => {
 };
 
 // EDIT
-const editUser = async (req, res) => {
+const editUserData = async (req, res) => {
   try {
     const { id } = req.params;
     const { name, email, password } = req.body;
@@ -152,6 +159,38 @@ const editUser = async (req, res) => {
       { new: true }
     );
     res.status(200).json(updatedUser);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+const editProfilePicture = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+
+    const { userId } = req.params;
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    const results = await cloudinary.uploader.upload(req.file.path, {
+      folder: "profile_pictures",
+      transformation: [
+        { quality: "auto", fetch_format: "auto" },
+        { width: 1200 },
+      ],
+    });
+
+    user.image = results.secure_url;
+    await user.save();
+
+    res
+      .status(200)
+      .json({ message: "Profile picture updated", image: user.image });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -191,7 +230,8 @@ module.exports = {
   registerUser,
   loginUser,
   logoutUser,
-  editUser,
+  editUserData,
+  editProfilePicture,
   deleteUser,
   getCurrentUser,
   authMiddleware,

@@ -1,6 +1,10 @@
 const express = require("express");
+const multer = require("multer");
 const router = express.Router();
 const usersController = require("../controllers/UsersController");
+
+const upload = multer({ dest: "uploads/" });
+
 
 // READ
 router.get(
@@ -17,9 +21,15 @@ router.post("/logout", usersController.logoutUser);
 
 // EDIT
 router.put(
-  "/edit/:id",
+  "/edit/data:id",
   usersController.authMiddleware,
-  usersController.editUser
+  usersController.editUserData
+);
+router.put(
+  "/edit/profile/picture/:id",
+  usersController.authMiddleware,
+  upload.single('file'),
+  usersController.editProfilePicture
 );
 
 // DELETE
