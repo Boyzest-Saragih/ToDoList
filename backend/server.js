@@ -10,7 +10,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: ["http://localhost:3000", "https://stirring-mandazi-62e42e.netlify.app"],
     credentials: true,
   })
 );
