@@ -3,7 +3,8 @@ import {
     getCurrentUser as getCurrentUserApi,
     userLogin as userLoginApi,
     userRegister as userRegisterApi,
-    userLogout as userLogoutApi
+    userLogout as userLogoutApi,
+    editUser as editUserApi
 } from "../api/userAPI"
 
 export const fetchUsers =()=> async(dispatch)=>{
@@ -49,5 +50,15 @@ export const getCurrentUser = ()=>async(dispatch)=>{
         dispatch({type:'GET_CURRENT_USER_SUCCESS', payload:currentUser})
     } catch (error) {
         console.log(error)
+    }
+}
+
+export const editUser = (id,name,email,password)=>async(dispatch)=>{
+    try {
+        const user = await editUserApi(id,name,email,password)
+        dispatch({type:'EDIT_USER_SUCCESS', payload:user})
+        
+    } catch (error) {
+        console.log(error.meessage)
     }
 }

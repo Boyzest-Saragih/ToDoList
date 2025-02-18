@@ -1,13 +1,13 @@
+const dotenv = require("dotenv");
+dotenv.config();
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require('cookie-parser')
 const mongoose = require("mongoose");
 const todosRoutes = require("./routes/TodosRoutes");
 const usersRoutes = require("./routes/UsersRoutes");
-const dotenv = require("dotenv");
 const app = express();
 
-dotenv.config();
 app.use(
   cors({
     origin: "http://localhost:3000", 

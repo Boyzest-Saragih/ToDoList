@@ -9,7 +9,8 @@ import { store, persistor } from "./store/store";
 import { Routes, Route, BrowserRouter } from "react-router-dom";
 import RegisterPage from "./pages/Auth/RegisterPage";
 import ProtectedRoute from "./components/Protected/ProtectedRoute";
-
+import Profile from "./pages/Profile";
+import UsersInfo from "./pages/Admin/UsersInfo";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -21,7 +22,9 @@ root.render(
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route element={<ProtectedRoute />}>
-              <Route path="/todos" element={<Todo />} />
+              <Route path="/" element={<Todo />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/admin/users" element={<UsersInfo />} />
             </Route>
           </Routes>
         </BrowserRouter>

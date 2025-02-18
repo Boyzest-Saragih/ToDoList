@@ -15,7 +15,7 @@ const RegisterPage = () => {
 
   useEffect(()=>{
     if(currentUser?.userId){
-      navigate('/todos')
+      navigate('/')
     }
   },[currentUser,navigate])
 
@@ -34,7 +34,7 @@ const RegisterPage = () => {
   return (
     <DefaultLayout>
       <div className="flex gap-10 min-h-[100vh]">
-        <div className="flex-1 flex w-[500px] justify-center items-center">
+        <div className="flex-1 flex w-[500px] justify-center items-center max-sm:hidden">
           <div className="text-center">
             <h1 className="text-white text-4xl font-bold">Create Account!</h1>
             <p>Join us today</p>
@@ -50,7 +50,7 @@ const RegisterPage = () => {
             onSubmit={handleSubmit}
             >
               <input
-                className="py-2 px-4 rounded-sm text-black"
+                className="py-2 px-4 rounded-sm text-black max-sm:w-80"
                 type="text"
                 id="name"
                 placeholder="Full Name"

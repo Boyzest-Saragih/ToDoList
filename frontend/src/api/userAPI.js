@@ -61,3 +61,36 @@ export const getCurrentUser = async () => {
     console.log(error.message);
   }
 };
+
+
+export const editProfilePicture = async (file)=>{
+  try {
+
+    const formData = new FormData()
+    formData.append('file',file)
+
+    const response = await fetch(`${apiURL}/edit/profile/picture`,{
+      method:'PUT',
+      credentials:"include",
+      body:formData
+    })
+    return response
+  } catch (error) {
+    console.log(error.message)
+  }
+}
+
+export const editUser = async(id,name,email,password)=>{
+  try {
+    const response = await fetch(`${apiURL}/edit/user/${id}`,{
+      method:"PUT",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({name,email,password}),
+      credentials:'include'
+    })
+    if(!response.ok){return new Error('Gagal request');}
+    return response.json()
+  } catch (error) {
+    console.log(error.message)
+  }
+}

@@ -21,12 +21,12 @@ router.post("/logout", usersController.logoutUser);
 
 // EDIT
 router.put(
-  "/edit/data:id",
+  "/edit/user/:id",
   usersController.authMiddleware,
   usersController.editUserData
 );
 router.put(
-  "/edit/profile/picture/:id",
+  "/edit/profile/picture",
   usersController.authMiddleware,
   upload.single('file'),
   usersController.editProfilePicture

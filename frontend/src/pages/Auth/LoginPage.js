@@ -13,7 +13,7 @@ const LoginPage = () => {
 
   useEffect(() => {
     if (currentUser?.userId) {
-      navigate("/todos");
+      navigate("/");
     }
   }, [currentUser, navigate]);
 
@@ -28,7 +28,7 @@ const LoginPage = () => {
   return (
     <DefaultLayout>
       <div className="flex gap-10 min-h-[100vh]">
-        <div className="flex-1 flex w-[500px] justify-center items-center ">
+        <div className="flex-1 flex w-[500px] justify-center items-center max-sm:hidden">
           <div className="text-center">
             <h1 className="text-white text-4xl font-bold">Welcome Back!</h1>
             <p>Let's start</p>
@@ -39,7 +39,7 @@ const LoginPage = () => {
             <h1 className="text-white text-4xl font-bold mb-4">Login Form</h1>
             <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
               <input
-                className="py-2 px-4 rounded-sm text-black"
+                className="py-2 px-4 rounded-sm text-black max-sm:w-80"
                 type="email"
                 id="email"
                 placeholder="Email address"

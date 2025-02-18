@@ -44,7 +44,6 @@ export const toggleTodo = (id,completed) => async (dispatch) => {
 };
 
 export const deleteTodo = (id) => async (dispatch) => {
-    console.log("id : "+id)
   try {
     await deleteTodosApi(id);
     dispatch({ type: "DELETED_TODO_SUCCESS", payload: id });

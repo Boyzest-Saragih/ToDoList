@@ -3,9 +3,8 @@ import TodoList from "../../components/TodoComponents/TodoList";
 import TodoForm from "../../components/TodoComponents/TodoForm";
 import TodoFilter from "../../components/TodoComponents/TodoFilter";
 import DefaultLayout from "../../layouts/DefaultLayout";
-import Header from "../../components/Header";
-import Footer from "../../components/Footer";
-import Counter from "../../components/TodoComponents/Counter";
+import Header from "../../components/Bar/Header";
+import Footer from "../../components/Bar/Footer";
 
 const Todo = () => {
   return (
@@ -14,7 +13,6 @@ const Todo = () => {
       <TodoForm />
       <TodoFilter />
       <TodoList />
-      {/* <Counter /> */}
       <Footer />
     </DefaultLayout>
   );

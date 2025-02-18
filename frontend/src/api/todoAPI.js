@@ -9,7 +9,6 @@ export const fetchTodos = async () => {
 };
 
 export const addTodos = async (title, id) => {
-  console.log(`${apiURL}/${id}`);
   const response = await fetch(`${apiURL}/${id}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

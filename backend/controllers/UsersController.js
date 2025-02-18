@@ -28,16 +28,20 @@ const authMiddleware = (req, res, next) => {
 };
 
 const adminMiddleware = (req, res, next) => {
-  if (req.user.role === "admin") {
-    next();
+  try {
+    if (req.user.role === "admin") {
+      next();
+    }
+  } catch (error) {
+    return res.status(403).json({ message: "No Access, Admin Only" });
   }
-  return res.status(403).json({ message: "No Access, Admin Only" });
 };
 
 // GET USERS DATA
 const getUsers = async (req, res) => {
   try {
     const user = await User.find();
+    console.log(user);
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -118,6 +122,7 @@ const loginUser = async (req, res) => {
         name: user.name,
         email: user.email,
         image: user.image,
+        role: user.role,
       },
       process.env.JWT_SECRET,
       {
@@ -134,7 +139,6 @@ const loginUser = async (req, res) => {
 
     res.json({ mesage: "Login succesfully", token, user: user.name });
   } catch (error) {
-    console.log(error);
     res.status(500).json({ message: error.message });
   }
 };
@@ -153,11 +157,17 @@ const editUserData = async (req, res) => {
   try {
     const { id } = req.params;
     const { name, email, password } = req.body;
+    const hashPassword = await bcrypt.hash(password, saltRounds);
     const updatedUser = await User.findByIdAndUpdate(
       id,
-      { name, email, password },
+      { name, email, password: hashPassword },
       { new: true }
     );
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: "user not found" });
+    }
+
     res.status(200).json(updatedUser);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -167,10 +177,10 @@ const editUserData = async (req, res) => {
 const editProfilePicture = async (req, res) => {
   try {
     if (!req.file) {
-      return res.status(400).json({ message: "No file uploaded" });
+      return res.status(400).json({ message: "No file choose" });
     }
 
-    const { userId } = req.params;
+    const userId = req.user.userId;
     const user = await User.findById(userId);
 
     if (!user) {
@@ -190,7 +200,7 @@ const editProfilePicture = async (req, res) => {
 
     res
       .status(200)
-      .json({ message: "Profile picture updated", image: user.image });
+      .json({ message: "Profile picture url : ", image: user.image });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -201,7 +211,7 @@ const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
     const deletedUser = await User.findByIdAndDelete(id);
-    res.status(200).json({ message: "Task DELETED" });
+    res.status(200).json({ message: "USER DELETED",deleteUser });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -213,12 +223,18 @@ const getCurrentUser = async (req, res) => {
     if (!req.user) {
       return res.status(401).json({ message: "User not logged" });
     }
-    console.log(req.user);
+
+    const user = await User.findById(req.user.userId);
+    if (!user) {
+      return res.status(404).json({ message: "user not found" });
+    }
+
     res.json({
-      userId: req.user.userId,
-      email: req.user.email,
-      name: req.user.name,
-      image: req.user.image,
+      userId: user._id,
+      email: user.email,
+      name: user.name,
+      image: user.image,
+      role: user.role,
     });
   } catch (error) {
     res.status(500).json({ message: error.message });

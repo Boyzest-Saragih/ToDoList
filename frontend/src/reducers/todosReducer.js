@@ -24,18 +24,22 @@ const todosReducers = (state = initialState, action) => {
         ),
       };
     case "DELETED_TODO_SUCCESS":
-        return{...state,todos:state.todos.filter((todo)=> todo._id !==action.payload)}
+      return {
+        ...state,
+        todos: state.todos.filter((todo) => todo._id !== action.payload),
+      };
     case "EDIT_TODO_SUCCESS":
-      console.log("Editing : ", action.payload);
-        return{
-            ...state,
-            todos: state.todos.map((todo)=>
-                todo._id === action.payload._id?{...todo, title:action.payload.title} : todo
-            )
-        }
+      return {
+        ...state,
+        todos: state.todos.map((todo) =>
+          todo._id === action.payload._id
+            ? { ...todo, title: action.payload.title }
+            : todo
+        ),
+      };
     default:
-      return state
+      return state;
   }
 };
 
-export default todosReducers
+export default todosReducers;

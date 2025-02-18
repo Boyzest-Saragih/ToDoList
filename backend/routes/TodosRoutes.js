@@ -7,15 +7,15 @@ const user = require("../controllers/UsersController");
 router.get("/", user.authMiddleware, todos.getTasks);
 
 // CREATE
-router.post("/:id", todos.createTask);
+router.post("/:id", user.authMiddleware, todos.createTask);
 
 // UPDATE
-router.put("/:id", todos.updateTask);
+router.put("/:id", user.authMiddleware, todos.updateTask);
 
 // UPDATE TOGGLE COMPLETED
-router.put("/:id/toggle", todos.toggleTaskCompleted);
+router.put("/:id/toggle", user.authMiddleware, todos.toggleTaskCompleted);
 
 // DELETE
-router.delete("/:id/delete", todos.deleteTask);
+router.delete("/:id/delete", user.authMiddleware, todos.deleteTask);
 
 module.exports = router;
